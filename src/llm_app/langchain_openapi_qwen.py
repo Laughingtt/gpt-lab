@@ -12,7 +12,7 @@ messages = [
 ]
 
 # 调用模型生成回复
-response = llm(messages)
+response = llm.invoke(messages)
 
 # 输出回复
 print(response.content)
