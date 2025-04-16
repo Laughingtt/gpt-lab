@@ -2,7 +2,7 @@
 import json, uuid ,requests
 
 def requests_chat_completions_deepseek(query):
-    url = "https://shdata-aiweb-pre.shdatacloud.com/api/v1/chat/completions"
+    url = ""
     headers = {'Content-Type': 'application/json',
                'Authorization': 'Bearer '  # apikey粘贴在这里
                }
