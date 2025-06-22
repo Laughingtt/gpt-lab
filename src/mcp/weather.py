@@ -2,7 +2,7 @@ from typing import Any
 import httpx
 from mcp.server.fastmcp import FastMCP
 
-# Initialize FastMCP server
+# 初始化 FastMCP server
 mcp = FastMCP("weather")
 
 # Constants
@@ -10,8 +10,9 @@ NWS_API_BASE = "https://api.weather.gov"
 USER_AGENT = "weather-app/1.0"
 
 
+
 async def make_nws_request(url: str) -> dict[str, Any] | None:
-    """Make a request to the NWS API with proper error handling."""
+    """向 NWS API 发送请求，并进行适当的错误处理。"""
     headers = {
         "User-Agent": USER_AGENT,
         "Accept": "application/geo+json"
@@ -24,70 +25,67 @@ async def make_nws_request(url: str) -> dict[str, Any] | None:
         except Exception:
             return None
 
-
 def format_alert(feature: dict) -> str:
-    """Format an alert feature into a readable string."""
+    """将警报 feature 格式化为可读的字符串。"""
     props = feature["properties"]
     return f"""
-Event: {props.get('event', 'Unknown')}
-Area: {props.get('areaDesc', 'Unknown')}
-Severity: {props.get('severity', 'Unknown')}
-Description: {props.get('description', 'No description available')}
-Instructions: {props.get('instruction', 'No specific instructions provided')}
+事件: {props.get('event', 'Unknown')}
+区域: {props.get('areaDesc', 'Unknown')}
+严重性: {props.get('severity', 'Unknown')}
+描述: {props.get('description', 'No description available')}
+指示: {props.get('instruction', 'No specific instructions provided')}
 """
-
 
 @mcp.tool()
 async def get_alerts(state: str) -> str:
-    """Get weather alerts for a US state.
+    """获取美国州的天气警报。
 
     Args:
-        state: Two-letter US state code (e.g. CA, NY)
+        state: 两个字母的美国州代码（例如 CA、NY）
     """
     url = f"{NWS_API_BASE}/alerts/active/area/{state}"
     data = await make_nws_request(url)
 
     if not data or "features" not in data:
-        return "Unable to fetch alerts or no alerts found."
+        return "无法获取警报或未找到警报。"
 
     if not data["features"]:
-        return "No active alerts for this state."
+        return "该州没有活跃的警报。"
 
     alerts = [format_alert(feature) for feature in data["features"]]
     return "\n---\n".join(alerts)
 
-
 @mcp.tool()
 async def get_forecast(latitude: float, longitude: float) -> str:
-    """Get weather forecast for a location.
+    """获取某个位置的天气预报。
 
     Args:
-        latitude: Latitude of the location
-        longitude: Longitude of the location
+        latitude: 位置的纬度
+        longitude: 位置的经度
     """
-    # First get the forecast grid endpoint
+    # 首先获取预报网格 endpoint
     points_url = f"{NWS_API_BASE}/points/{latitude},{longitude}"
     points_data = await make_nws_request(points_url)
 
     if not points_data:
-        return "Unable to fetch forecast data for this location."
+        return "无法获取此位置的预报数据。"
 
-    # Get the forecast URL from the points response
+    # 从 points response 中获取预报 URL
     forecast_url = points_data["properties"]["forecast"]
     forecast_data = await make_nws_request(forecast_url)
 
     if not forecast_data:
-        return "Unable to fetch detailed forecast."
+        return "无法获取详细预报。"
 
-    # Format the periods into a readable forecast
+    # 将 periods 格式化为可读的预报
     periods = forecast_data["properties"]["periods"]
     forecasts = []
-    for period in periods[:5]:  # Only show next 5 periods
+    for period in periods[:5]:  # 仅显示接下来的 5 个 periods
         forecast = f"""
 {period['name']}:
-Temperature: {period['temperature']}°{period['temperatureUnit']}
-Wind: {period['windSpeed']} {period['windDirection']}
-Forecast: {period['detailedForecast']}
+温度: {period['temperature']}°{period['temperatureUnit']}
+风: {period['windSpeed']} {period['windDirection']}
+预报: {period['detailedForecast']}
 """
         forecasts.append(forecast)
 
@@ -95,5 +93,5 @@ Forecast: {period['detailedForecast']}
 
 
 if __name__ == "__main__":
-    # Initialize and run the server
+    # 初始化并运行 server
     mcp.run(transport='stdio')

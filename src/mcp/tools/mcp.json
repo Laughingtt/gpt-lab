@@ -1,0 +1,76 @@
+{
+  "mcpServers": {
+    "ip6roVn8YWp-STBXZ1cbp": {
+      "name": "mysql",
+      "type": "sse",
+      "description": "",
+      "isActive": true,
+      "baseUrl": "http://127.0.0.1:3000/sse"
+    },
+    "Zaposdo9kReanXRLlOlTx": {
+      "isActive": true,
+      "name": "memory",
+      "description": "",
+      "baseUrl": "",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_FILE_PATH": "D:\\projects\\gpt-lab\\tests\\memory.json"
+      }
+    },
+    "z-wb1X-KsO4N1WH76Xc5F": {
+      "isActive": true,
+      "name": "mcp-server-chart",
+      "description": "",
+      "baseUrl": "",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@antv/mcp-server-chart"
+      ],
+      "env": {}
+    },
+    "hZ_yPSGOeq2kVARkt6YBf": {
+      "isActive": true,
+      "name": "fetch",
+      "description": "",
+      "baseUrl": "",
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {}
+    },
+    "Vq4aIB7Wej3PJzE-I7ZH2": {
+      "isActive": true,
+      "name": "filesystem",
+      "description": "",
+      "baseUrl": "",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "D:\\projects\\gpt-lab",
+        "D:\\projects"
+      ],
+      "env": {}
+    },
+    "weather": {
+      "isActive": true,
+      "name": "weather",
+      "type": "stdio",
+      "registryUrl": "https://pypi.tuna.tsinghua.edu.cn/simple",
+      "tags": [],
+      "command": "uv",
+      "args": [
+        "--directory",
+        "D:\\projects\\gpt-lab\\src\\mcp",
+        "run",
+        "weather.py"
+      ]
+    }
+  }
+}
